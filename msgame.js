@@ -25,15 +25,54 @@ let MSGame = (function(){
   }
 
   class _MSGame {
-    // constructor() {
-    //   this.init(8,10,10); // easy
-    // }
+    constructor() {
+      this.init(8,10,10); // easy
+    }
 
     validCoord(row, col) {
       return row >= 0 && row < this.nrows && col >= 0 && col < this.ncols;
     }
 
+    prepare_dom() {
+      const grid = document.querySelector(".grid");
+      const nCards = 20 * 24 ; // max grid size
+      for( let i = 0 ; i < nCards ; i ++) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.setAttribute("data-cardInd", i);
+        card.addEventListener("click", () => {
+          // card_click_cb( s, card, i);
+        });
+        grid.appendChild(card);
+      }
+    }
+
+    render(arr){
+      const grid = document.querySelector(".grid");
+      grid.style.gridTemplateColumns = `repeat(${arr.length}, 1fr)`;
+      for( let i = 0 ; i < grid.children.length ; i ++) {
+        const card = grid.children[i];
+        const ind = Number(card.getAttribute("data-cardInd"));
+        console.log(arr.length, arr[0].length, ind)
+        if( ind >= arr.length * arr[0].length) {
+          card.style.display = "none";
+        }
+        else {
+          card.style.display = "block";
+      //  if(s.onoff[ind])
+      //   card.classList.add("flipped");
+      // else
+        card.classList.remove("flipped");
+      }
+    }
+    //   document.querySelectorAll(".moveCount").forEach(
+    //     (e)=> {
+    //     e.textContent = String(s.moves);
+    // });
+  }
+
     init(nrows, ncols, nmines) {
+      console.log(nrows,ncols,nmines);
       this.nrows = nrows;
       this.ncols = ncols;
       this.nmines = nmines;
@@ -44,7 +83,8 @@ let MSGame = (function(){
       this.arr = array2d(
         nrows, ncols,
         () => ({mine: false, state: STATE_HIDDEN, count: 0}));
-      this.getRendering()
+      console.log(this.arr)
+      this.render(this.arr);
     }
 
     count(row,col) {
@@ -140,41 +180,6 @@ let MSGame = (function(){
         STATE_HIDDEN : STATE_MARKED;
       return true;
     }
-    prepare_dom(g) {
-      const grid = document.querySelector(".grid");
-      const nCards = 10 * 10 ; // max grid size
-      for( let i = 0 ; i < nCards ; i ++) {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.setAttribute("data-cardInd", i);
-        card.addEventListener("click", () => {
-          card_click_cb( g, card, i);
-        });
-        grid.appendChild(card);
-      }
-    }
-    // function render(s) {
-    //   const grid = document.querySelector(".grid");
-    //   grid.style.gridTemplateColumns = `repeat(${s.cols}, 1fr)`;
-    //   for( let i = 0 ; i < grid.children.length ; i ++) {
-    //     const card = grid.children[i];
-    //     const ind = Number(card.getAttribute("data-cardInd"));
-    //     if( ind >= s.rows * s.cols) {
-    //       card.style.display = "none";
-    //     }
-    //     else {
-    //       card.style.display = "block";
-    //       if(s.onoff[ind])
-    //         card.classList.add("flipped");
-    //       else
-    //         card.classList.remove("flipped");
-    //     }
-    //   }
-    //   document.querySelectorAll(".moveCount").forEach(
-    //     (e)=> {
-    //       e.textContent = String(s.moves);
-    //     });
-    // }
     // returns array of strings representing the rendering of the board
     //      "H" = hidden cell - no bomb
     //      "F" = hidden cell with a mark / flag
@@ -182,30 +187,14 @@ let MSGame = (function(){
     // '0'..'9' = number of mines in adjacent cells
     getRendering() {
       const res = [];
-      const grid = document.querySelector(".grid");
-      grid.style.gridTemplateColumns = `repeat(this.ncols, 1fr)`;
       for( let row = 0 ; row < this.nrows ; row ++) {
         let s = "";
-        const card = grid.children[row];
-        card.style.display = "block";
         for( let col = 0 ; col < this.ncols ; col ++ ) {
           let a = this.arr[row][col];
-          if( this.exploded && a.mine){
-            s += "M";
-            card.classList.add("flipped");
-          } 
-          else if( a.state === STATE_HIDDEN) {
-            s += "H";
-            card.classList.add("flipped");
-          }
-          else if( a.state === STATE_MARKED){
-            s += "F";
-            card.classList.add("flipped");
-          } 
-          else if( a.mine){
-            s += "M";
-            card.classList.add("flipped");
-          } 
+          if( this.exploded && a.mine) s += "M";
+          else if( a.state === STATE_HIDDEN) s += "H";
+          else if( a.state === STATE_MARKED) s += "F";
+          else if( a.mine) s += "M";
           else s += a.count.toString();
         }
         res[row] = s;
@@ -231,6 +220,41 @@ let MSGame = (function(){
 
 })();
 
+function main() {
+  let game = new MSGame();
+
+  document.querySelectorAll(".menuButton").forEach((button) =>{
+    let mode = button.getAttribute("data-size");
+    button.innerHTML = `${mode}`;
+    console.log(mode);
+    let nrows = 0 , ncols = 0, nmines = 0;
+
+    if(mode === 'easy'){
+      nrows = 8;
+      ncols = 10;
+      nmines = 10;
+    }
+    
+    else if(mode === 'medium'){
+      nrows = 14;
+      ncols = 18;
+      nmines = 40;
+    }
+
+    else if(mode === "hard"){     
+      nrows = 20;
+      ncols = 24;
+      nmines = 99;
+    }
+
+    button.addEventListener("click", game.init.bind(game, nrows, ncols, nmines));
+  });
+
+  game.prepare_dom()
+  game.init(8,10,10);
+}
+
+
 
 // let game = new MSGame();
 
@@ -253,67 +277,3 @@ let MSGame = (function(){
 
 // console.log("end");
 
-function main() {
-
-  let game = new MSGame();
-  
-  // get browser dimensions - not used in thise code
-  let html = document.querySelector("html");
-  console.log("Your render area:", html.clientWidth, "x", html.clientHeight)
-  
-  // register callbacks for buttons
-  document.querySelectorAll(".menuButton").forEach((button) =>{
-    let mode = button.getAttribute("data-size");
-    button.innerHTML = `${mode}`;
-  
-    console.log(mode);
-    let nrows = 0 , ncols = 0, nmines = 0;
-
-    if(mode === 'easy'){
-      nrows = 8;
-      ncols = 10;
-      nmines = 10;
-    }
-    
-    else if(mode === 'medium'){
-      nrows = 9;
-      ncols = 10;
-      nmines = 20;
-    }
-
-    else if(mode === "hard"){     
-      nrows = 10;
-      ncols = 10;
-      nmines = 30;
-    }
-
-    button.addEventListener("click", game.init.bind(game, nrows, ncols, nmines));
-  });
-
-  
-  game.getRendering();
-  console.log(game.getRendering().join("\n"));
-  console.log(game.getStatus());
-
-  // callback for overlay click - hide overlay and regenerate game
-  document.querySelector("#overlay").addEventListener("click", () => {
-    document.querySelector("#overlay").classList.remove("active");
-    // make_solvable(state);
-    game.getRendering();
-  });
-
-  // game.init(8, 10, 10);
-
-  // // sound callback
-  // let soundButton = document.querySelector("#sound");
-  // soundButton.addEventListener("change", () => {
-  //   clickSound.volume = soundButton.checked ? 0 : 1;
-  // });
-
-
-  // create enough cards for largest game and register click callbacks
-  game.prepare_dom( game);
-
-  // // simulate pressing 4x4 button to start new game
-  // button_cb(state, 4, 4);
-}
