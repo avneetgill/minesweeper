@@ -39,6 +39,29 @@ let MSGame = (function(){
       this.uncover(row,col)
     }
 
+    game_over(arr){
+      const grid = document.querySelector(".grid");
+      grid.style.gridTemplateColumns = `repeat(${arr[0].length}, 1fr)`;
+      for( let i = 0 ; i < grid.children.length ; i ++) {
+          const card = grid.children[i];
+          const ind = Number(card.getAttribute("data-cardInd"));
+          let row = ~~(i/arr[0].length);
+          let col = i%arr[0].length;
+          
+          // console.log(arr.length, arr[0].length, ind)
+          if( ind >= arr.length * arr[0].length) {
+            card.style.display = "none";
+          }
+          else {
+            // console.log(i,row,col)
+            card.style.display = "block";
+            if(this.arr[row][col].mine){
+              card.classList.add("bomb");
+            }
+          }
+      }
+    }
+
     prepare_dom() {
       const grid = document.querySelector(".grid");
       const nCards = 20 * 24 ; // max grid size
@@ -69,59 +92,59 @@ let MSGame = (function(){
         else {
           // console.log(i,row,col)
           card.style.display = "block";
-       if(this.arr[row][col].state === STATE_HIDDEN)
+       if(this.arr[row][col].state === STATE_HIDDEN){
         card.classList.add("flipped");
-      else if(this.arr[row][col].state === STATE_SHOWN){
-        console.log(this.arr[row][col].count)
-        if(this.arr[row][col].count === 1){
-          card.classList.remove("flipped");
-          card.classList.add("one");
+       }
+       else if(this.arr[row][col].state === STATE_SHOWN){
+          console.log(this.arr[row][col].count)
+          if(this.arr[row][col].mine){
+            card.classList.add("bomb");
+            this.game_over(this.arr);
+          }
+          else if(this.arr[row][col].count === 1){
+            card.classList.remove("flipped");
+            card.classList.add("one");
+          }
+          else if(this.arr[row][col].count === 0){
+            card.classList.remove("flipped");
+            card.classList.add("zero");
+          }
+          else if(this.arr[row][col].count === 2){
+            card.classList.remove("flipped");
+            card.classList.add("two");
+          }
+          else if(this.arr[row][col].count === 3){
+            card.classList.remove("flipped");
+            card.classList.add("three");
+          }
+          else if(this.arr[row][col].count === 4){
+            card.classList.remove("flipped");
+            card.classList.add("four");
+          } 
+          else if(this.arr[row][col].count === 5){
+            card.classList.remove("flipped");
+            card.classList.add("five");
+          }
+          else if(this.arr[row][col].count === 6){
+            card.classList.remove("flipped");
+            card.classList.add("six");
+          }  
+          else if(this.arr[row][col].count === 7){
+            card.classList.remove("flipped");
+            card.classList.add("seven");
+          } 
         }
-        if(this.arr[row][col].count === 0){
-          card.classList.remove("flipped");
-          card.classList.add("zero");
-        }
-        if(this.arr[row][col].count === 2){
-          card.classList.remove("flipped");
-          card.classList.add("two");
-        }
-        if(this.arr[row][col].count === 3){
-          card.classList.remove("flipped");
-          card.classList.add("three");
-        }
-        if(this.arr[row][col].count === 4){
-          card.classList.remove("flipped");
-          card.classList.add("four");
-        }
-          
-          
-      }
-       
+      
       }
     }
     //   document.querySelectorAll(".moveCount").forEach(
     //     (e)=> {
     //     e.textContent = String(s.moves);
     // });
-    // let ind = 0;
-    // // let len = grid.children.length
-    // for(let i = 0; i < grid.children.length; i++){
-    //   for(let j = 0; j < this.arr[0].length; j++){
-    //     const card = grid.children[i];
-    //     console.log(card)
-    //     ind++;
-    //     card.style.display = "block";
-    //     if(this.arr[i][j] == "H"){
-    //       card.classList.remove("flipped");
-    //     }
-    //     else if(arr[i][j] = "F"){
-    //       card.classList.add("flipped");
-    //     }
-    //   }
-    // }
   }
 
     init(nrows, ncols, nmines) {
+      // this.clear_board(nrows,ncols);
       console.log(nrows,ncols,nmines);
       this.nrows = nrows;
       this.ncols = ncols;
@@ -133,7 +156,7 @@ let MSGame = (function(){
       this.arr = array2d(
         nrows, ncols,
         () => ({mine: false, state: STATE_HIDDEN, count: 0}));
-      console.log(this.arr)
+      console.log(this.arr[0][0].state)
       this.render(this.arr);
     }
 
@@ -212,9 +235,10 @@ let MSGame = (function(){
       // have we hit a mine?
       if( this.arr[row][col].mine) {
         this.exploded = true;
+        console.log("BOMB")
       }
-      console.log(this.getRendering())
-      // this.getRendering();
+      // console.log(this.getRendering())
+      this.getRendering();
       return true;
       
     }

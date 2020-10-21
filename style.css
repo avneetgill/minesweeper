@@ -17,7 +17,7 @@
     margin: 2px;
     transition:.25s;
     opacity: 0.9;
-    transform: rotateY(180deg);
+    transform: rotateY(360deg);
     border: 1px solid;
     border-color: #f5f3eb #bab7a9 #bab7a9 #fff9db;
     box-sizing: border-box;
@@ -26,36 +26,82 @@
   }
   
   .card.flipped {
-    background-image: url(on.webp);
+    /* background-image: url(on.webp); */
+    background-color: grey;
     opacity: 1;
     transform: rotateY(0deg);
   }
 
-  .card.one {
-    /* background-color: beige; */
-    background-color: #e76346;
+  .card.zero{
+    
+    background-image: url(zero.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
-  
+
+  .card.one {
+    background-image: url(one.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+
   .card.two {
-    /* background-color: beige; */
-    background-color:#4199d3;
+    background-image: url(two.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
   
   .card.three {
-    /* background-color: beige; */
-    background-color:#57da59;
+    background-image: url(three.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
   
   .card.four{
-    /* background-color: beige; */
-    background-color:#bb41d3;
+    background-image: url(four.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .card.five{
+    background-image: url(five.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .card.six{
+    background-image: url(six.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .card.seven{
+    background-image: url(seven.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .card.bomb{
+    background-image: url(bomb.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   .grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     border-radius: 10px;
-    padding:5px;
+    /* padding:5px; */
     width: calc(70vh);
   }
   
