@@ -294,6 +294,7 @@
   #overlayin * {
     margin: 0px;
   }
+  
   #overlaylost.active #overlaylost {
     opacity: 0;
     animation: spinIn 1s ease-in-out;

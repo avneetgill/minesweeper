@@ -60,6 +60,7 @@ let MSGame = (function(){
       let status = this.getStatus();
       if(status.nmarked === status.nmines && status.nuncovered === ((status.nrows * status.ncols) - status.nmines) ){
         document.querySelector("#overlaywin").classList.toggle("active");
+        clearTimer(t);
         console.log("won")
       }
     }
@@ -87,7 +88,9 @@ let MSGame = (function(){
             }
           }
       } 
+      
       document.querySelector("#overlaylost").classList.toggle("active");
+      clearTimer(t);
     }
 
     prepare_dom() {
@@ -105,10 +108,6 @@ let MSGame = (function(){
           this.card_addflag(this.arr, i)
         });
        
-  
-        // card.addEventListener('',()=>{
-        //   this.card_pressed();
-        // })
         grid.appendChild(card);
       }
     }
@@ -151,6 +150,7 @@ let MSGame = (function(){
       }
        else if(this.arr[row][col].state === STATE_SHOWN){
         card.classList.remove("flipped");
+        card.classList.remove("flag");
         // console.log(this.arr[row][col].count)
           if(this.arr[row][col].mine){
             card.classList.add("bomb");
@@ -197,7 +197,7 @@ let MSGame = (function(){
 
     document.querySelectorAll(".mine").forEach(
       (e)=> {
-        e.textContent = String(this.nmines)
+        e.textContent = String(this.nmines - this.nmarked)
     });
     document.querySelectorAll(".flagcount").forEach(
       (e)=> {
@@ -414,10 +414,12 @@ function main() {
 
   document.querySelector("#overlaywin").addEventListener("click", () => {
     document.querySelector("#overlaywin").classList.remove("active");
+    clearTimer(0);
     game.init(8,10,10);
   });
   document.querySelector("#overlaylost").addEventListener("click", () => {
     document.querySelector("#overlaylost").classList.remove("active");
+    clearTimer(0);
     game.init(8,10,10);
   });
 
