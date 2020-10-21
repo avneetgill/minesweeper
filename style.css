@@ -8,10 +8,8 @@
   }
   
   .card {
- 
     width: auto;
     height: auto;
-  
     border-radius: 10%;
     border: none;
     margin: 2px;
@@ -26,14 +24,12 @@
   }
   
   .card.flipped {
-    /* background-image: url(on.webp); */
     background-color: grey;
     opacity: 1;
     transform: rotateY(0deg);
   }
 
   .card.zero{
-    
     background-image: url(zero.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -97,6 +93,13 @@
     background-size: cover;
   }
 
+  .card.flag{
+    background-image: url(flag.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -150,7 +153,7 @@
     align-items: stretch;
   }
   
-  #overlay {
+  #overlaywin {
     position: fixed;
     top: 0;
     left: 0;
@@ -169,11 +172,41 @@
     animation: fadeOut 0.5s;
     animation-fill-mode: forwards;
   }
-  #overlay * {
+
+  #overlaylost {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    opacity: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: 0s;
+    transition: all 0s;
+  
+    visibility: hidden;
+    animation: fadeOut 0.5s;
+    animation-fill-mode: forwards;
+  }
+
+  #overlaywin * {
     pointer-events: none;
   }
   
-  #overlay.active {
+  #overlaywin.active {
+    visibility: visible;
+    animation: fadeIn 0.5s;
+    animation-fill-mode: forwards;
+  }
+  #overlaylost * {
+    pointer-events: none;
+  }
+  
+  #overlaylost.active {
     visibility: visible;
     animation: fadeIn 0.5s;
     animation-fill-mode: forwards;
@@ -197,6 +230,24 @@
     text-align: center;
     font-size: 1em;
   }
+  #overlayin-lost {
+    padding: 1em;
+    padding-left: 4em;
+    padding-right: 4em;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: rgb(255, 255, 255);
+    box-shadow: 0 0 20px black;
+  }
+  
+  #overlayin-lost p {
+    text-align: center;
+    font-size: 1em;
+  }
   
   p.big {
     font-size: 2em !important;
@@ -215,13 +266,22 @@
     to { text-shadow: 0 0 20px rgb(255, 115, 0); }
   }
   
-  #overlay.active #overlayin {
+  #overlaywin.active #overlayin {
     opacity: 0;
     animation: spinIn 1s ease-in-out;
     animation-fill-mode: forwards;
   }
   
   #overlayin * {
+    margin: 0px;
+  }
+  #overlaylost.active #overlaylost {
+    opacity: 0;
+    animation: spinIn 1s ease-in-out;
+    animation-fill-mode: forwards;
+  }
+  
+  #overlay-lost * {
     margin: 0px;
   }
   

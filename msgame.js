@@ -38,7 +38,12 @@ let MSGame = (function(){
       let col = i%arr[0].length;
       this.uncover(row,col)
     }
-
+    card_addflag(arr,i){
+      // console.log("in long press")
+      let row = ~~(i/arr[0].length);
+      let col = i%arr[0].length;
+      this.mark(row,col)
+    }
     game_over(arr){
       const grid = document.querySelector(".grid");
       grid.style.gridTemplateColumns = `repeat(${arr[0].length}, 1fr)`;
@@ -56,10 +61,13 @@ let MSGame = (function(){
             // console.log(i,row,col)
             card.style.display = "block";
             if(this.arr[row][col].mine){
+              card.classList.remove("flipped");
               card.classList.add("bomb");
+              console.log(row,col + "in mine")
             }
           }
-      }
+      } 
+      document.querySelector("#overlaylost").classList.toggle("active");
     }
 
     prepare_dom() {
@@ -71,7 +79,11 @@ let MSGame = (function(){
         card.setAttribute("data-cardInd", i);
         card.addEventListener("click", () => {
           this.card_uncover( this.arr, i);
+          // this.card_addflag(this.arr, i)
         });
+        // card.addEventListener('',()=>{
+        //   this.card_pressed();
+        // })
         grid.appendChild(card);
       }
     }
@@ -92,14 +104,33 @@ let MSGame = (function(){
         else {
           // console.log(i,row,col)
           card.style.display = "block";
+        
        if(this.arr[row][col].state === STATE_HIDDEN){
+        console.log("here")
+        card.classList.remove("bomb");
+        card.classList.remove("flag");
+        card.classList.remove("zero");
+        card.classList.remove("one");
+        card.classList.remove("two");
+        card.classList.remove("three");
+        card.classList.remove("four");
+        card.classList.remove("five");
+        card.classList.remove("six");
+        card.classList.remove("seven");
         card.classList.add("flipped");
        }
+       else if(this.arr[row][col].state === STATE_MARKED){
+        console.log(this.arr[row][col].state)
+        card.classList.remove("flipped");
+        card.classList.add("flag");
+      }
        else if(this.arr[row][col].state === STATE_SHOWN){
-          console.log(this.arr[row][col].count)
+        card.classList.remove("flipped");
+        // console.log(this.arr[row][col].count)
           if(this.arr[row][col].mine){
             card.classList.add("bomb");
             this.game_over(this.arr);
+            return;
           }
           else if(this.arr[row][col].count === 1){
             card.classList.remove("flipped");
@@ -134,6 +165,7 @@ let MSGame = (function(){
             card.classList.add("seven");
           } 
         }
+        
       
       }
     }
@@ -144,7 +176,7 @@ let MSGame = (function(){
   }
 
     init(nrows, ncols, nmines) {
-      // this.clear_board(nrows,ncols);
+
       console.log(nrows,ncols,nmines);
       this.nrows = nrows;
       this.ncols = ncols;
@@ -156,7 +188,6 @@ let MSGame = (function(){
       this.arr = array2d(
         nrows, ncols,
         () => ({mine: false, state: STATE_HIDDEN, count: 0}));
-      console.log(this.arr[0][0].state)
       this.render(this.arr);
     }
 
@@ -255,6 +286,8 @@ let MSGame = (function(){
       this.nmarked += this.arr[row][col].state == STATE_MARKED ? -1 : 1;
       this.arr[row][col].state = this.arr[row][col].state == STATE_MARKED ?
         STATE_HIDDEN : STATE_MARKED;
+      
+      this.getRendering();
       return true;
     }
     // returns array of strings representing the rendering of the board
@@ -326,6 +359,15 @@ function main() {
     }
 
     button.addEventListener("click", game.init.bind(game, nrows, ncols, nmines));
+  });
+
+  document.querySelector("#overlaywin").addEventListener("click", () => {
+    document.querySelector("#overlaywin").classList.remove("active");
+    game.init(8,10,10);
+  });
+  document.querySelector("#overlaylost").addEventListener("click", () => {
+    document.querySelector("#overlaylost").classList.remove("active");
+    game.init(8,10,10);
   });
 
   game.prepare_dom()
