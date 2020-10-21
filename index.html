@@ -10,25 +10,35 @@
 
 
 <body>
+  <h1>Minesweeper</h1>
     <div class="menu">
       <div class="menuButton" data-size="easy"></div>
       <div class="menuButton" data-size="medium"></div>
       <div class="menuButton" data-size="hard"></div>
     </div>
+    <div class = "header">
+      <span class="mines">
+        Mines: <span class="mine">0</span>
+      </span>
+      <span class="flags">
+        Flags: <span class="flagcount">0</span>
+      </span>
+    </div>
     <div class="gridwrapper">
         <div class="grid"></div>
+    </div>
+    <div class="timer">
+     Time Elapsed: <span class="time">00:00</span>
     </div>
     <div id="overlaywin">
       <div id="overlayin">
         <p class="big glow">Congratulations, you won!!!</p>
-        <p class="darker">It took you <span class="moveCount">0</span> moves.</p>
         <p class="darker">Click anywhere to start a new game.
       </div>
     </div>
     <div id="overlaylost">
       <div id="overlay-lost">
         <p class="big glow">Game Over :(</p>
-        <p class="darker">It took you <span class="moveCount">0</span> moves.</p>
         <p class="darker">Click anywhere to start a new game.
       </div>
     </div>

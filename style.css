@@ -7,6 +7,25 @@
     background: rgb(255, 237, 179);
   }
   
+  h1{
+    justify-content: center;
+    text-align: center;
+    font-size: 50px;
+  }
+
+  .timer{
+    padding-top: 2%;
+    justify-content: center;
+    text-align: center;
+  }
+  .header{
+    padding-top: 2%;
+    justify-content: center;
+    text-align: center;
+  }
+  .mines{
+    padding-right: 2%;
+  }
   .card {
     width: auto;
     height: auto;
@@ -300,7 +319,7 @@
     to { transform: scale(1) rotateX(360deg) ;  opacity: 1; }
   }
   
-  #sound {
+  /* #sound {
     width: 40px;
     height: 30px;
     appearance: none;
@@ -320,4 +339,4 @@
     margin-top: 5px;
     text-align: center;
     color: gray;
-  }
+  } */

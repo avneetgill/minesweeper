@@ -44,6 +44,14 @@ let MSGame = (function(){
       let col = i%arr[0].length;
       this.mark(row,col)
     }
+    check_win(){
+      let status = this.getStatus();
+      if(status.nmarked === status.nmines && status.nuncovered === ((status.nrows * status.ncols) - status.nmines) ){
+        document.querySelector("#overlaywin").classList.toggle("active");
+        //clear timer
+      }
+    }
+
     game_over(arr){
       const grid = document.querySelector(".grid");
       grid.style.gridTemplateColumns = `repeat(${arr[0].length}, 1fr)`;
@@ -81,6 +89,8 @@ let MSGame = (function(){
           this.card_uncover( this.arr, i);
           // this.card_addflag(this.arr, i)
         });
+       
+  
         // card.addEventListener('',()=>{
         //   this.card_pressed();
         // })
@@ -120,7 +130,8 @@ let MSGame = (function(){
         card.classList.add("flipped");
        }
        else if(this.arr[row][col].state === STATE_MARKED){
-        console.log(this.arr[row][col].state)
+        // console.log(this.arr[row][col].state)
+        this.nflags--;
         card.classList.remove("flipped");
         card.classList.add("flag");
       }
@@ -169,14 +180,36 @@ let MSGame = (function(){
       
       }
     }
-    //   document.querySelectorAll(".moveCount").forEach(
-    //     (e)=> {
-    //     e.textContent = String(s.moves);
-    // });
+    document.querySelectorAll(".mine").forEach(
+      (e)=> {
+        e.textContent = String(this.nmines)
+    });
+    document.querySelectorAll(".flagcount").forEach(
+      (e)=> {
+        e.textContent = String(this.nmarked)
+    });
+  }
+  
+
+  start_time(t,timer){
+      timer = setInterval(function(){
+        t++;
+        document.querySelectorAll(".time").innerHTML  = t;
+      // console.log( document.querySelectorAll(".time").innerHTML)
+      //   document.getElementById("time").innerHTML = ('000' + t).substr(-3);
+      // }, 1000);  
+  },0);
+}
+
+  stop(){
+    if(timer) window.clearInterval(timer);
   }
 
     init(nrows, ncols, nmines) {
-
+      // document.querySelector("mines").innerHTML = nmines;
+      let t = 0
+      let timer = null
+      this.start_time(t,timer)
       console.log(nrows,ncols,nmines);
       this.nrows = nrows;
       this.ncols = ncols;
@@ -184,6 +217,7 @@ let MSGame = (function(){
       this.nmarked = 0;
       this.nuncovered = 0;
       this.exploded = false;
+      // this.nflags = nmines;
       // create an array
       this.arr = array2d(
         nrows, ncols,
@@ -288,6 +322,7 @@ let MSGame = (function(){
         STATE_HIDDEN : STATE_MARKED;
       
       this.getRendering();
+      this.check_win();
       return true;
     }
     // returns array of strings representing the rendering of the board
@@ -360,6 +395,7 @@ function main() {
 
     button.addEventListener("click", game.init.bind(game, nrows, ncols, nmines));
   });
+
 
   document.querySelector("#overlaywin").addEventListener("click", () => {
     document.querySelector("#overlaywin").classList.remove("active");
