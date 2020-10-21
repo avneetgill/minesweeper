@@ -1,5 +1,16 @@
 window.addEventListener('load', main);
 "use strict";
+let t = 0;
+let timer = undefined;
+
+function clearTimer(seconds){
+  clearInterval(timer);
+  t=seconds;
+  document.querySelectorAll(".time").forEach(
+    (e)=> {
+      e.textContent = String(t) + " second(s)";
+    });
+}
 
 let MSGame = (function(){
 
@@ -44,11 +55,12 @@ let MSGame = (function(){
       let col = i%arr[0].length;
       this.mark(row,col)
     }
+
     check_win(){
       let status = this.getStatus();
       if(status.nmarked === status.nmines && status.nuncovered === ((status.nrows * status.ncols) - status.nmines) ){
         document.querySelector("#overlaywin").classList.toggle("active");
-        //clear timer
+        console.log("won")
       }
     }
 
@@ -88,6 +100,9 @@ let MSGame = (function(){
         card.addEventListener("click", () => {
           this.card_uncover( this.arr, i);
           // this.card_addflag(this.arr, i)
+        });
+        card.addEventListener("contextmenu", () => {
+          this.card_addflag(this.arr, i)
         });
        
   
@@ -131,7 +146,6 @@ let MSGame = (function(){
        }
        else if(this.arr[row][col].state === STATE_MARKED){
         // console.log(this.arr[row][col].state)
-        this.nflags--;
         card.classList.remove("flipped");
         card.classList.add("flag");
       }
@@ -180,6 +194,7 @@ let MSGame = (function(){
       
       }
     }
+
     document.querySelectorAll(".mine").forEach(
       (e)=> {
         e.textContent = String(this.nmines)
@@ -188,28 +203,24 @@ let MSGame = (function(){
       (e)=> {
         e.textContent = String(this.nmarked)
     });
+    this.check_win();
   }
   
-
-  start_time(t,timer){
-      timer = setInterval(function(){
-        t++;
-        document.querySelectorAll(".time").innerHTML  = t;
-      // console.log( document.querySelectorAll(".time").innerHTML)
-      //   document.getElementById("time").innerHTML = ('000' + t).substr(-3);
-      // }, 1000);  
-  },0);
-}
-
-  stop(){
-    if(timer) window.clearInterval(timer);
+  startTimer() {
+    ++t;
+    document.querySelectorAll(".time").forEach(
+      (e)=> {
+        e.textContent = String(t) + " second(s)";
+      });
   }
-
+  
     init(nrows, ncols, nmines) {
-      // document.querySelector("mines").innerHTML = nmines;
-      let t = 0
-      let timer = null
-      this.start_time(t,timer)
+      // let t = 0
+      // let timer = null
+      // document.querySelector("body").addEventListener("click", () => {
+      //   this.start_time(t,timer)
+      // });
+      // this.start_time(t,timer)
       console.log(nrows,ncols,nmines);
       this.nrows = nrows;
       this.ncols = ncols;
@@ -223,6 +234,7 @@ let MSGame = (function(){
         nrows, ncols,
         () => ({mine: false, state: STATE_HIDDEN, count: 0}));
       this.render(this.arr);
+      clearTimer(0);
     }
 
     count(row,col) {
@@ -281,8 +293,10 @@ let MSGame = (function(){
       if( ! this.validCoord(row,col)) return false;
       // if this is the very first move, populate the mines, but make
       // sure the current cell does not get a mine
-      if( this.nuncovered === 0)
+      if( this.nuncovered === 0){
         this.sprinkleMines(row, col);
+        timer= setInterval(this.startTimer, 1000)
+      }  
       // if cell is not hidden, ignore this move
       if( this.arr[row][col].state !== STATE_HIDDEN) return false;
       // floodfill all 0-count cells
@@ -361,6 +375,7 @@ let MSGame = (function(){
       }
     }
   }
+  
 
   return _MSGame;
 
@@ -410,26 +425,4 @@ function main() {
   game.init(8,10,10);
 }
 
-
-
-// let game = new MSGame();
-
-// game.init(8, 10, 10);
-// console.log(game.getRendering().join("\n"));
-// console.log(game.getStatus());
-
-// game.uncover(2,5);
-// console.log(game.getRendering().join("\n"));
-// console.log(game.getStatus());
-
-// game.uncover(5,5);
-// console.log(game.getRendering().join("\n"));
-// console.log(game.getStatus());
-
-// game.mark(4,5);
-// console.log(game.getRendering().join("\n"));
-// console.log(game.getStatus());
-
-
-// console.log("end");
 
