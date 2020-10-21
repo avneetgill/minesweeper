@@ -8,10 +8,7 @@
   }
   
   .card {
-    background-image: url(off.webp);
-    background-repeat: no-repeat;
-    background-size: cover;
-  
+ 
     width: auto;
     height: auto;
   
@@ -21,7 +18,9 @@
     transition:.25s;
     opacity: 0.9;
     transform: rotateY(180deg);
-  
+    border: 5px solid;
+    border-color: #f5f3eb #bab7a9 #bab7a9 #fff9db;
+    box-sizing: border-box;
     animation: fadeIn 0.5s;
     animation-fill-mode: forwards;
   }
@@ -31,7 +30,27 @@
     opacity: 1;
     transform: rotateY(0deg);
   }
+
+  .card.one {
+    /* background-color: beige; */
+    background-color: #e76346;
+  }
   
+  .card.two {
+    /* background-color: beige; */
+    background-color:#4199d3;
+  }
+  
+  .card.three {
+    /* background-color: beige; */
+    background-color:#57da59;
+  }
+  
+  .card.four{
+    /* background-color: beige; */
+    background-color:#bb41d3;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);

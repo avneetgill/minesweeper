@@ -33,6 +33,12 @@ let MSGame = (function(){
       return row >= 0 && row < this.nrows && col >= 0 && col < this.ncols;
     }
 
+    card_uncover(arr, i){
+      let row = ~~(i/arr[0].length);
+      let col = i%arr[0].length;
+      this.uncover(row,col)
+    }
+
     prepare_dom() {
       const grid = document.querySelector(".grid");
       const nCards = 20 * 24 ; // max grid size
@@ -41,7 +47,7 @@ let MSGame = (function(){
         card.className = "card";
         card.setAttribute("data-cardInd", i);
         card.addEventListener("click", () => {
-          // card_click_cb( s, card, i);
+          this.card_uncover( this.arr, i);
         });
         grid.appendChild(card);
       }
@@ -49,26 +55,70 @@ let MSGame = (function(){
 
     render(arr){
       const grid = document.querySelector(".grid");
-      grid.style.gridTemplateColumns = `repeat(${arr.length}, 1fr)`;
+      grid.style.gridTemplateColumns = `repeat(${arr[0].length}, 1fr)`;
       for( let i = 0 ; i < grid.children.length ; i ++) {
         const card = grid.children[i];
         const ind = Number(card.getAttribute("data-cardInd"));
-        console.log(arr.length, arr[0].length, ind)
+        let row = ~~(i/arr[0].length);
+        let col = i%arr[0].length;
+        
+        // console.log(arr.length, arr[0].length, ind)
         if( ind >= arr.length * arr[0].length) {
           card.style.display = "none";
         }
         else {
+          // console.log(i,row,col)
           card.style.display = "block";
-      //  if(s.onoff[ind])
-      //   card.classList.add("flipped");
-      // else
-        card.classList.remove("flipped");
+       if(this.arr[row][col].state === STATE_HIDDEN)
+        card.classList.add("flipped");
+      else if(this.arr[row][col].state === STATE_SHOWN){
+        console.log(this.arr[row][col].count)
+        if(this.arr[row][col].count === 1){
+          card.classList.remove("flipped");
+          card.classList.add("one");
+        }
+        if(this.arr[row][col].count === 0){
+          card.classList.remove("flipped");
+          card.classList.add("zero");
+        }
+        if(this.arr[row][col].count === 2){
+          card.classList.remove("flipped");
+          card.classList.add("two");
+        }
+        if(this.arr[row][col].count === 3){
+          card.classList.remove("flipped");
+          card.classList.add("three");
+        }
+        if(this.arr[row][col].count === 4){
+          card.classList.remove("flipped");
+          card.classList.add("four");
+        }
+          
+          
+      }
+       
       }
     }
     //   document.querySelectorAll(".moveCount").forEach(
     //     (e)=> {
     //     e.textContent = String(s.moves);
     // });
+    // let ind = 0;
+    // // let len = grid.children.length
+    // for(let i = 0; i < grid.children.length; i++){
+    //   for(let j = 0; j < this.arr[0].length; j++){
+    //     const card = grid.children[i];
+    //     console.log(card)
+    //     ind++;
+    //     card.style.display = "block";
+    //     if(this.arr[i][j] == "H"){
+    //       card.classList.remove("flipped");
+    //     }
+    //     else if(arr[i][j] = "F"){
+    //       card.classList.add("flipped");
+    //     }
+    //   }
+    // }
   }
 
     init(nrows, ncols, nmines) {
@@ -163,7 +213,10 @@ let MSGame = (function(){
       if( this.arr[row][col].mine) {
         this.exploded = true;
       }
+      console.log(this.getRendering())
+      // this.getRendering();
       return true;
+      
     }
     // puts a flag on a cell
     // this is the 'right-click' or 'long-tap' functionality
@@ -199,7 +252,8 @@ let MSGame = (function(){
         }
         res[row] = s;
       }
-      return res;
+      this.render(res)
+      // return res;
     }
     getStatus() {
       let done = this.exploded ||
