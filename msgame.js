@@ -1,4 +1,5 @@
 window.addEventListener('load', main);
+$.event.special.tap.emitTapOnTaphold = false;
 "use strict";
 let t = 0;
 let timer = undefined;
@@ -104,9 +105,21 @@ let MSGame = (function(){
           this.card_uncover( this.arr, i);
           // this.card_addflag(this.arr, i)
         });
-        card.addEventListener("contextmenu", () => {
-          this.card_addflag(this.arr, i)
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if(!isMobile){
+          card.addEventListener("contextmenu", () => {
+            this.card_addflag(this.arr, i)
+          });
+        }
+        else{
+          $(card).bind("taphold", (e) => {
+           e.preventDefault();
+           this.card_addflag(this.arr, i)
         });
+      }
+        // card.addEventListener("contextmenu", () => {
+        //   this.card_addflag(this.arr, i)
+        // });
        
         grid.appendChild(card);
       }
